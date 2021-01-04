@@ -5,11 +5,18 @@
 }
 
 <h1>Delete</h1>
-
-<h3>Are you sure you want to delete @Model.Name?</h3>
-<div>
-    <form asp-action="Delete">
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
-</div>
+@if (Model.Name != null)
+{
+    <h3>Are you sure you want to delete @Model.Name?</h3>
+    <div>
+        <form asp-action="Delete">
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            <a asp-action="Index">Back to List</a>
+        </form>
+    </div>
+}
+@if (Model.Name == null)
+{
+    <div>This category is in use and cannot be deleted at this time.</div>
+    <a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" asp-area="" asp-controller="Category" asp-action="Index">Return to Category Management</a>
+}
