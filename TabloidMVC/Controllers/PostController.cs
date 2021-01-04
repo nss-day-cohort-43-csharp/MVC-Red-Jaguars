@@ -5,6 +5,7 @@ using Microsoft.VisualBasic;
 using System.Security.Claims;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
+using System.Linq;
 
 namespace TabloidMVC.Controllers
 {
@@ -22,7 +23,13 @@ namespace TabloidMVC.Controllers
 
         public IActionResult Index()
         {
-            var posts = _postRepository.GetAllPublishedPosts();
+            var posts = _postRepository.GetAllPublishedPosts().OrderByDescending(post => post.PublishDateTime);
+            return View(posts);
+        }
+
+        public IActionResult MyIndex()
+        {
+            var posts = _postRepository.GetPostsByUser(GetCurrentUserProfileId()).OrderByDescending(post => post.CreateDateTime);
             return View(posts);
         }
 
