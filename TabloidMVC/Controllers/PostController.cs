@@ -5,6 +5,8 @@ using Microsoft.VisualBasic;
 using System.Security.Claims;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
+using System.Linq;
+using TabloidMVC.Models;
 
 namespace TabloidMVC.Controllers
 {
@@ -22,7 +24,13 @@ namespace TabloidMVC.Controllers
 
         public IActionResult Index()
         {
-            var posts = _postRepository.GetAllPublishedPosts();
+            var posts = _postRepository.GetAllPublishedPosts().OrderByDescending(post => post.PublishDateTime);
+            return View(posts);
+        }
+
+        public IActionResult MyIndex()
+        {
+            var posts = _postRepository.GetPostsByUser(GetCurrentUserProfileId()).OrderByDescending(post => post.CreateDateTime);
             return View(posts);
         }
 
@@ -46,6 +54,63 @@ namespace TabloidMVC.Controllers
             var vm = new PostCreateViewModel();
             vm.CategoryOptions = _categoryRepository.GetAll();
             return View(vm);
+        }
+        public ActionResult Edit(int id)
+        {
+            var post = _postRepository.GetUserPostById(id, GetCurrentUserProfileId());
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            else
+            {
+                var vm = new PostCreateViewModel();
+                vm.CategoryOptions = _categoryRepository.GetAll();
+                vm.Post = post;
+
+                return View(vm);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id, Post post)
+        {
+            try
+            {
+                _postRepository.UpdatePost(post, id);
+
+                return RedirectToAction("Details", new { id = id });
+            }
+            catch
+            {
+                return RedirectToAction("Edit", id);
+            }
+        }
+
+        public ActionResult Delete(int id)
+        {
+            var post = _postRepository.GetUserPostById(id, GetCurrentUserProfileId());
+
+            return View(post);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, Post post)
+        {
+            try
+            {
+                _postRepository.DeletePost(id);
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View(post);
+            }
         }
 
         [HttpPost]
