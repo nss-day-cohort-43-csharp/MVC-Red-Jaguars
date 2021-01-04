@@ -61,6 +61,7 @@ namespace TabloidMVC.Repositories
                 UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
                 Subject = reader.GetString(reader.GetOrdinal("Subject")),
                 Content = reader.GetString(reader.GetOrdinal("Content")),
+                CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                 UserProfile = new UserProfile()
                 {
                     Id = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
@@ -68,7 +69,6 @@ namespace TabloidMVC.Repositories
                     LastName = reader.GetString(reader.GetOrdinal("LastName")),
                     DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
                     Email = reader.GetString(reader.GetOrdinal("Email")),
-                    CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
                     ImageLocation = DbUtils.GetNullableString(reader, "AvatarImage"),
                     UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
                     UserType = new UserType()
@@ -90,6 +90,29 @@ namespace TabloidMVC.Repositories
                 }
             };
             return comment;
+        }
+        public void AddComment(Comment comment)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                        INSERT INTO Comment (PostId, UserProfileId, Subject, Content, CreateDateTime)
+                                        OUTPUT INSERTED.ID
+                                        VALUES (@PostId, @UserProfileId, @Subject, @Content, convert(datetime,@CreateDateTime,))
+";
+                    cmd.Parameters.AddWithValue("@PostId", comment.PostId);
+                    cmd.Parameters.AddWithValue("@UserProfileId", comment.UserProfileId);
+                    cmd.Parameters.AddWithValue("@Subject", comment.Subject);
+                    cmd.Parameters.AddWithValue("@Content", comment.Content);
+                    cmd.Parameters.AddWithValue("@CreateDateTime", comment.CreateDateTime);
+
+                    comment.Id = (int)cmd.ExecuteScalar();
+                }
+            }
+
         }
 
 
