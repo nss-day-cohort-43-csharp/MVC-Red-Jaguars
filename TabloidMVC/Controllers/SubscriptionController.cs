@@ -6,11 +6,19 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
+using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
 {
     public class SubscriptionController : Controller
     {
+        private readonly ISubscriptionRepository _subscriptionRepository;
+
+        public SubscriptionController(ISubscriptionRepository subscriptionRepository)
+        {
+            _subscriptionRepository = subscriptionRepository;
+        }
+        
         // GET: SubscriptionController
         public ActionResult Index()
         {
@@ -94,10 +102,9 @@ namespace TabloidMVC.Controllers
             subscription.SubscriberUserProfileId = GetCurrentUserId();
             subscription.BeginDateTime = DateTime.Now;
 
-            string postString = postId.ToString();
+            _subscriptionRepository.Add(subscription);
 
             return RedirectToAction("Details", "Post", new { id = postId });
-
 
         }
 
