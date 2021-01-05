@@ -27,5 +27,6 @@ namespace TabloidMVC.Models
                 return $"{FirstName} {LastName}";
             }
         }
+        public Boolean Active { get; set; }
     }
 }

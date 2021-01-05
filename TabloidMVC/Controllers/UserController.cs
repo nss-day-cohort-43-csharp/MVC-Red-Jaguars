@@ -6,6 +6,7 @@ using System.Security.Claims;
 using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 using System.Linq;
+using TabloidMVC.Models;
 
 namespace TabloidMVC.Controllers
 {
@@ -23,6 +24,11 @@ namespace TabloidMVC.Controllers
             var users = _userProfileRepository.GetAllUsers().OrderBy(user => user.DisplayName);
             return View(users);
         }
+        public IActionResult DeactiveView()
+        {
+            var users = _userProfileRepository.GetAllDeactiveUsers().OrderBy(user => user.DisplayName);
+            return View(users);
+        }
         public IActionResult Details(int id)
         {
             var user = _userProfileRepository.GetUserById(id);
@@ -32,5 +38,56 @@ namespace TabloidMVC.Controllers
             }
             return View(user);
         }
+        public ActionResult Deactivate(int id)
+        {
+            var user = _userProfileRepository.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Deactivate(int id, UserProfile user)
+        {
+            try
+            {
+                _userProfileRepository.DeactivateUser(id);
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View(user);
+            }
+        }
+        public ActionResult Activate(int id)
+        {
+            var user = _userProfileRepository.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Activate(int id, UserProfile user)
+        {
+            try
+            {
+                _userProfileRepository.ActivateUser(id);
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View(user);
+            }
+        }
+
     }
 }

@@ -5,7 +5,9 @@
 }
 
 <h1>Users</h1>
-
+<p>
+    <a class="btn btn-primary" asp-action="DeactiveView">View Deactivated Users</a>
+</p>
 <table class="table">
     <thead>
         <tr>
@@ -40,8 +42,8 @@
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary mx-1" title="Edit">
                     <i class="fas fa-pencil-alt"></i>
                 </a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-primary mx-1" title="Delete">
-                    <i class="fas fa-trash"></i>
+                <a asp-action="Deactivate" asp-route-id="@item.Id" class="btn btn-outline-primary mx-1" title="Deactivate">
+                    <p>Deactivate</p>
                 </a>
             </td>
         </tr>

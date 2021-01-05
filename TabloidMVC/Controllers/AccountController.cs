@@ -54,7 +54,7 @@ namespace TabloidMVC.Controllers
         {
             var userProfile = _userProfileRepository.GetByEmail(credentials.Email);
 
-            if (userProfile == null)
+            if (userProfile == null | userProfile.Active == false)
             {
                 ModelState.AddModelError("Email", "Invalid email");
                 return View();
