@@ -67,9 +67,9 @@ namespace TabloidMVC.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    INSERT INTO UserProfile (DisplayName, FirstName, LastName, Email, ImageLocation, UserTypeId, CreateDateTime)
+                    INSERT INTO UserProfile (DisplayName, FirstName, LastName, Email, ImageLocation, UserTypeId, CreateDateTime, Active)
                     OUTPUT INSERTED.ID
-                    VALUES (@displayName, @firstName, @lastName, @email, @imageLocation, @userTypeId, @createDateTime)";
+                    VALUES (@displayName, @firstName, @lastName, @email, @imageLocation, @userTypeId, @createDateTime, 1)";
 
                     cmd.Parameters.AddWithValue("@displayName", userProfile.DisplayName);
                     cmd.Parameters.AddWithValue("@firstName", userProfile.FirstName);
