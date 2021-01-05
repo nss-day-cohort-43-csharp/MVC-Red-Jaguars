@@ -25,13 +25,18 @@ namespace TabloidMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(UserProfile userProfile)
+        public async Task<IActionResult> Register(UserProfile userProfile)
         {
             try
             {
                 userProfile.UserTypeId = 2;
                 _userProfileRepository.Register(userProfile);
-                return RedirectToAction(nameof(Login));
+                Credentials credentials = new Credentials();
+                credentials.Email = userProfile.Email;
+
+                await Login(credentials);
+                //return RedirectToAction(nameof(Login));
+                return RedirectToAction("Index", "Home");
             }
             catch
             {
