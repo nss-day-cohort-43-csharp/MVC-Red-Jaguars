@@ -52,6 +52,46 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+        public Comment GetCommentById(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                       SELECT c.Id, c.PostId, c.UserProfileId, c.Subject,
+                              c.Content, c.CreateDateTime, p.Id AS PostId,
+                              p.Title, p.Content AS PostContent,     
+                              p.ImageLocation AS HeaderImage,
+                              p.CreateDateTime AS PostDateTime, p.PublishDateTime, p.IsApproved,
+                              p.CategoryId,
+                              u.FirstName, u.LastName, u.DisplayName, 
+                              u.Email, u.CreateDateTime, u.ImageLocation AS AvatarImage,
+                              u.UserTypeId, 
+                              ut.[Name] AS UserTypeName
+                         FROM Comment c
+                         LEFT JOIN Post p ON c.PostId = p.Id
+                         LEFT JOIN UserProfile u ON c.UserProfileId = u.id
+                         LEFT JOIN UserType ut ON u.UserTypeId = ut.id
+                        WHERE c.Id = @id";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+                    var reader = cmd.ExecuteReader();
+
+                    Comment comments = null;
+
+
+                    if (reader.Read())
+                    {
+                        comments = NewCommentFromReader(reader);
+                    }
+                    reader.Close();
+
+                    return comments;
+                }
+            }
+        }
         private Comment NewCommentFromReader(SqlDataReader reader)
         {
             Comment comment = new Comment()
@@ -101,7 +141,7 @@ namespace TabloidMVC.Repositories
                     cmd.CommandText = @"
                                         INSERT INTO Comment (PostId, UserProfileId, Subject, Content, CreateDateTime)
                                         OUTPUT INSERTED.ID
-                                        VALUES (@PostId, @UserProfileId, @Subject, @Content, convert(datetime,@CreateDateTime,))
+                                        VALUES (@PostId, @UserProfileId, @Subject, @Content, convert(datetime,@CreateDateTime,1))
 ";
                     cmd.Parameters.AddWithValue("@PostId", comment.PostId);
                     cmd.Parameters.AddWithValue("@UserProfileId", comment.UserProfileId);
@@ -113,6 +153,47 @@ namespace TabloidMVC.Repositories
                 }
             }
 
+        }
+        public void DeleteComment(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            DELETE FROM Comment
+                            WHERE Id = @id
+                        ";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+        }
+        public void UpdateComment(Comment comment, int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                UPDATE Comment
+                                SET
+                                Subject = @Subject,
+                                Content = @Content
+                                WHERE Id = @id
+";
+                    cmd.Parameters.AddWithValue("@Subject", comment.Subject);
+                    cmd.Parameters.AddWithValue("@Content", comment.Content);
+                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
 
