@@ -229,7 +229,7 @@ namespace TabloidMVC.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"Select Count(Id) as Count FROM UserProfile WHERE UserTypeId = 1";
+                    cmd.CommandText = @"Select Count(Id) as Count FROM UserProfile WHERE UserTypeId = 1 AND Active = 1";
 
                     var reader = cmd.ExecuteReader();
                     if (reader.Read())
@@ -245,9 +245,12 @@ namespace TabloidMVC.Repositories
         {
             UserProfile user = GetUserById(id);
             int Admin = AdminCount();
-            if (!(user.UserTypeId == 1 && Admin <= 1))
+            if (user.UserTypeId == 1 && Admin <= 1)
             {
-
+                throw new Exception("This is the last admin! Must have at least one admin at all times.");
+            }
+            else
+            {
                 using (var conn = Connection)
                 {
                     conn.Open();
@@ -263,10 +266,6 @@ namespace TabloidMVC.Repositories
                         cmd.ExecuteNonQuery();
                     }
                 }
-            }
-            else
-            {
-                throw new Exception("This is the last admin! Must have at least one admin at all times.");
             }
         }
         public void ActivateUser(int id)
@@ -305,6 +304,8 @@ namespace TabloidMVC.Repositories
                     cmd.ExecuteNonQuery();
                 }
             }
+
         }
+
     }
 }

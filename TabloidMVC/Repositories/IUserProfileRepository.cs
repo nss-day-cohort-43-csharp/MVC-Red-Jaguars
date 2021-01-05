@@ -13,7 +13,7 @@ namespace TabloidMVC.Repositories
         List<UserProfile> GetAllDeactiveUsers();
         void ActivateUser(int id);
         public void Register(UserProfile userProfile);
-        void ChangeUserType(UserProfile userProfile);
-
+        void ChangeUserType(UserProfile user);
+        int AdminCount();
     }
 }

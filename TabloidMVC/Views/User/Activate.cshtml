@@ -1,4 +1,4 @@
-﻿@model TabloidMVC.Models.UserProfile
+﻿@model TabloidMVC.Models.ViewModels.DeactivateUserViewModel
 
 @{
     ViewData["Title"] = "Activate";
@@ -6,7 +6,11 @@
 
 <h1>Deactivate</h1>
 
-<h3>Are you sure you want to activate @Model.DisplayName?</h3>
+@if (!String.IsNullOrEmpty(Model.ErrorMsg))
+{
+    <div class="alert alert-danger">@Model.ErrorMsg</div>
+}
+<h3>Are you sure you want to activate @Model.User.DisplayName?</h3>
 <div>
     <form asp-action="Activate">
         <input type="submit" value="Activate" class="btn btn-danger" /> |

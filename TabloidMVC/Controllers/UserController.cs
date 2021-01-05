@@ -96,6 +96,7 @@ namespace TabloidMVC.Controllers
             }
             catch
             {
+
                 return View(user);
             }
         }
@@ -110,6 +111,7 @@ namespace TabloidMVC.Controllers
             }
             var vm = new UserProfileTypeViewModel()
             {
+                olduser = user,
                 user = user,
                 type = types
             };
@@ -122,12 +124,24 @@ namespace TabloidMVC.Controllers
         {
             try
             {
-                _userProfileRepository.ChangeUserType(vm.user);
+                int Admin = _userProfileRepository.AdminCount();
+                if (vm.olduser.UserTypeId == 1 && Admin >= 2 || vm.olduser.UserTypeId != 1)
+                {
 
-                return RedirectToAction("Index");
+                    _userProfileRepository.ChangeUserType(vm.user);
+
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    throw new Exception("Need to always have at least one admin!");
+                }
             }
-            catch
+            catch (Exception ex)
             {
+                vm.ErrorMsg = ex.Message;
+                vm.user = _userProfileRepository.GetUserById(vm.user.Id);
+                vm.type = _userTypeRepository.GetUserTypes();
                 return View(vm);
             }
         }

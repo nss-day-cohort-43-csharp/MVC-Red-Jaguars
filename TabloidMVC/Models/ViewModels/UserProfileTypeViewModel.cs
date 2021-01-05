@@ -8,6 +8,8 @@ namespace TabloidMVC.Models.ViewModels
     public class UserProfileTypeViewModel
     {
         public UserProfile user { get; set; }
+        public UserProfile olduser { get; set; }
         public List<UserType> type { get; set; }
+        public string ErrorMsg { get; set; }
     }
 }
