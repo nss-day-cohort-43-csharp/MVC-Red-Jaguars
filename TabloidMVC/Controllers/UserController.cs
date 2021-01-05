@@ -13,10 +13,12 @@ namespace TabloidMVC.Controllers
     public class UserController : Controller
     {
         private readonly IUserProfileRepository _userProfileRepository;
+        private readonly IUserTypeRepository _userTypeRepository;
 
-        public UserController(IUserProfileRepository userProfileRepository)
+        public UserController(IUserProfileRepository userProfileRepository, IUserTypeRepository userTypeRepository)
         {
             _userProfileRepository = userProfileRepository;
+            _userTypeRepository = userTypeRepository;
         }
 
         public IActionResult Index()
@@ -86,6 +88,38 @@ namespace TabloidMVC.Controllers
             catch
             {
                 return View(user);
+            }
+        }
+
+        public ActionResult ChangeType(int id)
+        {
+            var types = _userTypeRepository.GetUserTypes();
+            var user = _userProfileRepository.GetUserById(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var vm = new UserProfileTypeViewModel()
+            {
+                user = user,
+                type = types
+            };
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangeType(UserProfileTypeViewModel vm, int id)
+        {
+            try
+            {
+                _userProfileRepository.ChangeUserType(vm.user);
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View(vm);
             }
         }
 
