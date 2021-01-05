@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
 using System.Collections.Generic;
@@ -55,6 +57,30 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public void Register(UserProfile userProfile)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                    INSERT INTO UserProfile (DisplayName, FirstName, LastName, Email, ImageLocation, UserTypeId, CreateDateTime)
+                    OUTPUT INSERTED.ID
+                    VALUES (@displayName, @firstName, @lastName, @email, @imageLocation, @userTypeId, @createDateTime)";
+
+                    cmd.Parameters.AddWithValue("@displayName", userProfile.DisplayName);
+                    cmd.Parameters.AddWithValue("@firstName", userProfile.FirstName);
+                    cmd.Parameters.AddWithValue("@lastName", userProfile.LastName);
+                    cmd.Parameters.AddWithValue("@email", userProfile.Email);
+                    cmd.Parameters.AddWithValue("@imageLocation", DbUtils.ValueOrDBNull(userProfile.ImageLocation));
+                    cmd.Parameters.AddWithValue("@userTypeId", userProfile.UserTypeId);
+                    cmd.Parameters.AddWithValue("@createDateTime", DateTime.Now);
+
+                    userProfile.Id = (int)cmd.ExecuteScalar();
+                }
+            }
+        }
         public List<UserProfile> GetAllUsers()
         {
             using (var conn = Connection)

@@ -18,6 +18,32 @@ namespace TabloidMVC.Controllers
             _userProfileRepository = userProfileRepository;
         }
 
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(UserProfile userProfile)
+        {
+            try
+            {
+                userProfile.UserTypeId = 2;
+                _userProfileRepository.Register(userProfile);
+                Credentials credentials = new Credentials();
+                credentials.Email = userProfile.Email;
+
+                await Login(credentials);
+                //return RedirectToAction(nameof(Login));
+                return RedirectToAction("Index", "Home");
+            }
+            catch
+            {
+                return View(userProfile);
+            }
+        }
+
         public IActionResult Login()
         {
             return View();
