@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
+using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -14,9 +16,11 @@ namespace TabloidMVC.Controllers
     public class CommentController : Controller
     {
         private readonly ICommentRepository _commentRepository;
-        public CommentController(ICommentRepository commentRepository)
+        private readonly IPostRepository _postRepository;
+        public CommentController(ICommentRepository commentRepository, IPostRepository postRepository)
         {
             _commentRepository = commentRepository;
+            _postRepository = postRepository;
         }
         // GET: CommentController
         public IActionResult Index(int id)
@@ -32,23 +36,41 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: CommentController/Create
-        public IActionResult Create()
+        public IActionResult Create(int id)
         {
-            return View();
+            Post post = _postRepository.GetPublishedPostById(id);
+            CommentCreateViewModel vm = new CommentCreateViewModel()
+            {
+                Post = post,
+                Comment = new Comment()
+                {
+                    PostId = post.Id,
+                    UserProfileId = GetCurrentUserId()
+                }
+            };
+            return View(vm);
         }
 
         // POST: CommentController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(IFormCollection collection)
+        public IActionResult Create(CommentCreateViewModel input)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                input.Comment.CreateDateTime = DateTime.Now;
+                _commentRepository.AddComment(input.Comment);
+                return RedirectToAction(nameof(Index), new { id = input.Comment.PostId });
             }
             catch
             {
-                return View();
+                CommentCreateViewModel vm = new CommentCreateViewModel()
+                {
+                    Post = _postRepository.GetPublishedPostById(input.Comment.PostId),
+                    Comment = input.Comment
+                };
+                vm.ErrorMessage = "Woops! Something went wrong while saving this comment.";
+                return View(vm);
             }
         }
 
@@ -92,6 +114,11 @@ namespace TabloidMVC.Controllers
             {
                 return View();
             }
+        }
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
     }
 }
