@@ -62,14 +62,14 @@ namespace TabloidMVC.Controllers
                 _commentRepository.AddComment(input.Comment);
                 return RedirectToAction(nameof(Index), new { id = input.Comment.PostId });
             }
-            catch
+            catch (Exception ex)
             {
                 CommentCreateViewModel vm = new CommentCreateViewModel()
                 {
                     Post = _postRepository.GetPublishedPostById(input.Comment.PostId),
                     Comment = input.Comment
                 };
-                vm.ErrorMessage = "Woops! Something went wrong while saving this comment.";
+                vm.ErrorMessage = ex.ToString();
                 return View(vm);
             }
         }
@@ -77,42 +77,49 @@ namespace TabloidMVC.Controllers
         // GET: CommentController/Edit/5
         public IActionResult Edit(int id)
         {
-            return View();
+            Comment comment = _commentRepository.GetCommentById(id);
+            return View(comment);
         }
 
         // POST: CommentController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, IFormCollection collection)
+        public IActionResult Edit(int id, Comment comment)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _commentRepository.UpdateComment(comment, id);
+                return RedirectToAction(nameof(Index), new { id = comment.PostId });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+
+                return View(comment);
             }
         }
 
         // GET: CommentController/Delete/5
         public IActionResult Delete(int id)
         {
-            return View();
+            Comment comment = _commentRepository.GetCommentById(id);
+            return View(comment);
         }
 
         // POST: CommentController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, IFormCollection collection)
+        public IActionResult Delete(int id, Comment comment)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                Comment helper = _commentRepository.GetCommentById(id);
+                int returnId = helper.PostId;
+                _commentRepository.DeleteComment(id);
+                return RedirectToAction(nameof(Index), nameof(Comment), new { id = returnId });
             }
             catch
             {
-                return View();
+                return View(id);
             }
         }
         private int GetCurrentUserId()
