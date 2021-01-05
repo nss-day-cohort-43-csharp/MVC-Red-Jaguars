@@ -7,6 +7,7 @@ using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 using System.Linq;
 using TabloidMVC.Models;
+using System;
 
 namespace TabloidMVC.Controllers
 {
@@ -40,27 +41,35 @@ namespace TabloidMVC.Controllers
         }
         public ActionResult Deactivate(int id)
         {
-            var user = _userProfileRepository.GetUserById(id);
-            if (user == null)
+            DeactivateUserViewModel vm = new DeactivateUserViewModel()
+            {
+                User = _userProfileRepository.GetUserById(id)
+            };
+            if (vm.User == null)
             {
                 return NotFound();
             }
-            return View(user);
+            return View(vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Deactivate(int id, UserProfile user)
+        public ActionResult Deactivate(int id, DeactivateUserViewModel vm)
         {
+            vm = new DeactivateUserViewModel()
+            {
+                User = _userProfileRepository.GetUserById(id)
+            };
             try
             {
                 _userProfileRepository.DeactivateUser(id);
 
                 return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
-                return View(user);
+                vm.ErrorMsg = ex.Message;
+                return View(vm);
             }
         }
         public ActionResult Activate(int id)
