@@ -4,55 +4,61 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Comments</h1>
+<div class="container pt-5">
+    <h1>Comments</h1>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.UserProfile.DisplayName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Subject)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Content)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDateTime)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserProfile.DisplayName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Subject)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Content)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreateDateTime)
-                </td>
-                <td>
-                    @if (User.Claims.FirstOrDefault().Value == item.UserProfileId.ToString())
-                    {
-                        @Html.ActionLink("Edit", "Edit", new { id = item.Id });
-                    } |
-                    @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == item.UserProfileId.ToString())
-                    {
-                        @Html.ActionLink("Delete", "Delete", new { id = item.Id });
-                    }
-
-                </td>
+                <th>
+                    User
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Comment
+                </th>
+                <th>
+                    Time
+                </th>
+                <th></th>
             </tr>
-        }
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserProfile.DisplayName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Subject)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Content)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreateDateTime)
+                    </td>
+                    <td>
+                        @if (User.Claims.FirstOrDefault().Value == item.UserProfileId.ToString())
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary mx-1" title="Edit">
+                                <i class="fas fa-pencil-alt"></i>
+                            </a>
+                        } |
+                        @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == item.UserProfileId.ToString())
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-primary mx-1" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        }
 
-    </tbody>
-</table>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
