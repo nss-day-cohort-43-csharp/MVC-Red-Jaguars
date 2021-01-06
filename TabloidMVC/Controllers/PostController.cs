@@ -47,7 +47,7 @@ namespace TabloidMVC.Controllers
             int userId = GetCurrentUserProfileId();
 
             if (post == null)
-            {                
+            {
                 post = _postRepository.GetUserPostById(id, userId);
                 if (post == null)
                 {
@@ -122,7 +122,14 @@ namespace TabloidMVC.Controllers
         {
             var post = _postRepository.GetUserPostById(id, GetCurrentUserProfileId());
 
-            return View(post);
+            if (GetCurrentUserProfileId() == post.UserProfileId || User.IsInRole("1"))
+            {
+                return View(post);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -153,7 +160,7 @@ namespace TabloidMVC.Controllers
                 _postRepository.Add(vm.Post);
 
                 return RedirectToAction("Details", new { id = vm.Post.Id });
-            } 
+            }
             catch
             {
                 vm.CategoryOptions = _categoryRepository.GetAll();

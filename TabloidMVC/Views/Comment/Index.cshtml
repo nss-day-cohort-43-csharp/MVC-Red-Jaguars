@@ -41,10 +41,18 @@
                     @Html.DisplayFor(modelItem => item.CreateDateTime)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                </td>*
+                    @if (User.Claims.FirstOrDefault().Value == item.UserProfileId.ToString())
+                    {
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id });
+                    } |
+                    @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == item.UserProfileId.ToString())
+                    {
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id });
+                    }
+
+                </td>
             </tr>
         }
+
     </tbody>
 </table>
