@@ -1,5 +1,4 @@
 ﻿@model TabloidMVC.Models.ViewModels.PostDetailsViewModel
-
 @{
     ViewData["Title"] = $"Post - {Model.Post.Title}";
 }
@@ -14,6 +13,12 @@
             <div class="row justify-content-between">
                 <p class="text-secondary">Written by @Model.Post.UserProfile.DisplayName</p>
                 <p class="text-black-50">Published on @Html.DisplayFor(model => model.Post.PublishDateTime)</p>
+            </div>
+            <div class="row justify-content-between">
+                <p class="text-secondary">Tags @string.Join(", ", Model.Tags)</p>
+                <a asp-controller="Tag" asp-action="GetTagsForPost" asp-route-id="@Model.Post.Id" title="Manage Tags">
+                    Manage Tags
+                </a>
             </div>
             <div class="row">
                 @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
@@ -43,11 +48,12 @@
             <section class="row justify-content-center">
                 <div>
                     <img src="@Model.Post.ImageLocation" />
+
                 </div>
             </section>
         }
         <section class="row post__content">
-            <p class="col-sm-12 mt-5">@Html.DisplayFor(model => model.Post.Content)</p>
+            <p class="col-sm-12 mt-5">@Model.Post.Content</p>
         </section>
         <div>
             <a asp-controller="Comment" asp-action="Create" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Add Comment">
@@ -73,6 +79,5 @@
             }
 
         </div>
-
     </div>
 </div>

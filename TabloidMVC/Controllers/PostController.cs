@@ -16,14 +16,16 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ITagRepository _tagRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly IPostReactionRepository _postReactionRepository;
         private readonly IReactionRepository _reactionRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ISubscriptionRepository subscriptionRepository, IPostReactionRepository postReactionRepository, IReactionRepository reactionRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ISubscriptionRepository subscriptionRepository, IPostReactionRepository postReactionRepository, IReactionRepository reactionRepository, ITagRepository tagRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _tagRepository = tagRepository;
             _subscriptionRepository = subscriptionRepository;
             _postReactionRepository = postReactionRepository;
             _reactionRepository = reactionRepository;
@@ -65,6 +67,7 @@ namespace TabloidMVC.Controllers
             vm.Post = post;
             vm.AllReactions = reactions;
             vm.AllPostReactions = postReactions;
+            vm.Tags = _tagRepository.GetTagPostById(id);
 
             foreach (Subscription subscription in mySubscriptions)
             {
