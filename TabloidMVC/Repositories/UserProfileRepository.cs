@@ -222,21 +222,49 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
-        public void DeactivateUser(int id)
+        public int AdminCount()
         {
             using (var conn = Connection)
             {
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"
+                    cmd.CommandText = @"Select Count(Id) as Count FROM UserProfile WHERE UserTypeId = 1 AND Active = 1";
+
+                    var reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        return reader.GetInt32(reader.GetOrdinal("Count"));
+                    }
+                    return 0;
+                }
+            }
+
+        }
+        public void DeactivateUser(int id)
+        {
+            UserProfile user = GetUserById(id);
+            int Admin = AdminCount();
+            if (user.UserTypeId == 1 && Admin <= 1)
+            {
+                throw new Exception("This is the last admin! Must have at least one admin at all times.");
+            }
+            else
+            {
+                using (var conn = Connection)
+                {
+                    conn.Open();
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = @"
                         UPDATE UserProfile
                         SET
                             Active = 0
                         WHERE Id = @id";
-                    cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Parameters.AddWithValue("@id", id);
 
-                    cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
         }
@@ -276,6 +304,8 @@ namespace TabloidMVC.Repositories
                     cmd.ExecuteNonQuery();
                 }
             }
+
         }
+
     }
 }

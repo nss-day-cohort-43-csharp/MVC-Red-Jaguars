@@ -5,11 +5,9 @@ using System.Threading.Tasks;
 
 namespace TabloidMVC.Models.ViewModels
 {
-    public class UserProfileTypeViewModel
+    public class DeactivateUserViewModel
     {
-        public UserProfile user { get; set; }
-        public UserProfile olduser { get; set; }
-        public List<UserType> type { get; set; }
+        public UserProfile User { get; set; }
         public string ErrorMsg { get; set; }
     }
 }
