@@ -111,10 +111,10 @@ namespace TabloidMVC.Controllers
 
         public ActionResult GetTagsForPost(int id)
         {
-            PostTagsViewModel vm = new PostTagsViewModel()
+            PostDetailsViewModel vm = new PostDetailsViewModel()
             {
-                tags = _tagRepository.GetAllTags(),
-                post = _postRepository.GetPublishedPostById(id)
+                Tags = _tagRepository.GetAllTags(),
+                Post = _postRepository.GetPublishedPostById(id)
             };
 
             return View(vm);
@@ -122,13 +122,13 @@ namespace TabloidMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult GetTagsForPost(int id, PostTagsViewModel viewModel)
+        public ActionResult GetTagsForPost(int id, PostDetailsViewModel viewModel)
         {
             try
             {
-                _tagRepository.AddTagToPost(viewModel.tag.Id, viewModel.post);
+                _tagRepository.AddTagToPost(viewModel.Tag.Id, viewModel.Post);
 
-                return RedirectToAction(nameof(Details), "Post", new { id = viewModel.post.Id });
+                return RedirectToAction(nameof(Details), "Post", new { id = viewModel.Post.Id });
             }
             catch (Exception ex)
             {

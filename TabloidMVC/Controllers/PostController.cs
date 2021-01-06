@@ -16,23 +16,15 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
-<<<<<<< HEAD
         private readonly ITagRepository _tagRepository;
+        private readonly ISubscriptionRepository _subscriptionRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ITagRepository tagRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ITagRepository tagRepository, ISubscriptionRepository subscriptionRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
             _tagRepository = tagRepository;
-=======
-        private readonly ISubscriptionRepository _subscriptionRepository;
-
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ISubscriptionRepository subscriptionRepository)
-        {
-            _postRepository = postRepository;
-            _categoryRepository = categoryRepository;
             _subscriptionRepository = subscriptionRepository;
->>>>>>> master
         }
 
         public IActionResult Index()
@@ -49,41 +41,24 @@ namespace TabloidMVC.Controllers
 
         public IActionResult Details(int id)
         {
-<<<<<<< HEAD
-            PostTagsViewModel viewModel = new PostTagsViewModel
-            {
-                post = _postRepository.GetPublishedPostById(id),
-                tags = _tagRepository.GetTagPostById(id)
-
-            };
-
-            if (viewModel.post == null)
-            {
-                int userId = GetCurrentUserProfileId();
-                viewModel.post = _postRepository.GetUserPostById(id, userId);
-                if (viewModel.post == null)
-=======
             var post = _postRepository.GetPublishedPostById(id);
             int userId = GetCurrentUserProfileId();
 
             if (post == null)
-            {                
+            {
                 post = _postRepository.GetUserPostById(id, userId);
                 if (post == null)
->>>>>>> master
                 {
                     return NotFound();
                 }
             }
-<<<<<<< HEAD
-            return View(viewModel);
-=======
 
             List<Subscription> mySubscriptions = _subscriptionRepository.GetUserSubscriptions(userId);
 
             PostDetailsViewModel vm = new PostDetailsViewModel();
 
             vm.Post = post;
+            vm.Tags = _tagRepository.GetTagPostById(id);
 
             foreach (Subscription subscription in mySubscriptions)
             {
@@ -94,7 +69,6 @@ namespace TabloidMVC.Controllers
             }
 
             return View(vm);
->>>>>>> master
         }
 
         public IActionResult Create()
