@@ -71,6 +71,7 @@ namespace TabloidMVC.Controllers
                 if (subscription.ProviderUserProfileId == post.UserProfileId)
                 {
                     vm.Subscribed = true;
+                    vm.SubscriptionId = subscription.Id;
                 }
             }
 

@@ -29,7 +29,7 @@ namespace TabloidMVC.Repositories
                     cmd.Parameters.AddWithValue("@subUserId", subscription.SubscriberUserProfileId);
                     cmd.Parameters.AddWithValue("@provUserId", subscription.ProviderUserProfileId);
                     cmd.Parameters.AddWithValue("@beginTime", subscription.BeginDateTime);
-                    cmd.Parameters.AddWithValue("@endTime", 12/31/9999);
+                    cmd.Parameters.AddWithValue("@endTime", DateTime.MaxValue);
                     subscription.Id = (int)cmd.ExecuteScalar();
                 }
             }
@@ -47,28 +47,85 @@ namespace TabloidMVC.Repositories
                     FROM Subscription
                     WHERE SubscriberUserProfileId = @subUserProfileId";
 
-                    cmd.Parameters.AddWithValue("@subUserProfileID", id);
+                    cmd.Parameters.AddWithValue("@subUserProfileId", id);
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     List<Subscription> subscriptions = new List<Subscription>();
 
-                    while (reader.Read())
+                    
+                        while (reader.Read())
+                        {
+                            Subscription subscription = new Subscription()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                                SubscriberUserProfileId = reader.GetInt32(reader.GetOrdinal("SubscriberUserProfileId")),
+                                ProviderUserProfileId = reader.GetInt32(reader.GetOrdinal("ProviderUserProfileId")),
+                                BeginDateTime = reader.GetDateTime(reader.GetOrdinal("BeginDateTime")),
+                                EndDateTime = reader.GetDateTime(reader.GetOrdinal("EndDateTime"))
+                            };
+                            subscriptions.Add(subscription);
+                        }
+
+                    
+                    reader.Close();
+                    return subscriptions;                    
+                }
+            }            
+        }
+
+        public Subscription GetSubscriptionById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                    SELECT Id, SubscriberUserProfileId, ProviderUserProfileId, BeginDateTime, EndDateTime
+                    FROM Subscription
+                    WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read())
                     {
-                        Subscription subscription = new Subscription()
+                        Subscription subscription = new Subscription
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             SubscriberUserProfileId = reader.GetInt32(reader.GetOrdinal("SubscriberUserProfileId")),
                             ProviderUserProfileId = reader.GetInt32(reader.GetOrdinal("ProviderUserProfileId")),
                             BeginDateTime = reader.GetDateTime(reader.GetOrdinal("BeginDateTime")),
-                            EndDateTime = (DateTime)Utils.DbUtils.GetNullableDateTime(reader, "EndDateTime")  
+                            EndDateTime = reader.GetDateTime(reader.GetOrdinal("EndDateTime"))
                         };
-                        subscriptions.Add(subscription);
+                        reader.Close();
+                        return subscription;
                     }
-                    reader.Close();
-                    return subscriptions;                    
+                    else
+                    {
+                        reader.Close();
+                        return null;
+                    }
                 }
-            }            
+            }
+        }
+
+        public void Edit(Subscription subscription)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                    UPDATE Subscription
+                    SET EndDateTime = @now
+                    WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@now", DateTime.Now);
+                    cmd.Parameters.AddWithValue("@id", subscription.Id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         
