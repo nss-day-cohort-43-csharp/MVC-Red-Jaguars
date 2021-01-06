@@ -19,13 +19,13 @@ namespace TabloidMVC.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT r.Id, r.PostId, r.ReactionId, r.UserProfileId,
-                                        FROM Reaction
+                    cmd.CommandText = @"SELECT r.Id, r.PostId, r.ReactionId, r.UserProfileId
+                                        FROM PostReaction r
                                         LEFT JOIN Post p ON p.Id = r.PostId
                                         LEFT JOIN Reaction e ON e.Id = r.ReactionId
                                         LEFT JOIN UserProfile u ON u.Id = r.UserProfileId
                                         WHERE r.PostId = @id";
-
+                    cmd.Parameters.AddWithValue("@id", id);
                     SqlDataReader reader = cmd.ExecuteReader();
 
                     List<PostReaction> reactions = new List<PostReaction>();

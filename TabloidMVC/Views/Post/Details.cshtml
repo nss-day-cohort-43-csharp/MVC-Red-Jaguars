@@ -50,8 +50,14 @@
             <a asp-controller="Comment" asp-action="Index" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Comments">
                 <i class="fas fa-comment-alt"></i>
             </a>
+            @foreach (Reaction reaction in Model.AllReactions)
+            {
+                <a asp-controller="Comment" asp-action="Create" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Add Comment">
+                    <img src="@reaction.ImageLocation" alt="@reaction.Name reaction" id="reactionImage" height="25px" width="25px"/>
+                </a>
+             }
 
-        </div>
+            </div>
 
     </div>
 </div>
