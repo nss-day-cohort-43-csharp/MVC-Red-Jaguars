@@ -18,13 +18,17 @@ namespace TabloidMVC.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly ITagRepository _tagRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly IPostReactionRepository _postReactionRepository;
+        private readonly IReactionRepository _reactionRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ITagRepository tagRepository, ISubscriptionRepository subscriptionRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ISubscriptionRepository subscriptionRepository, IPostReactionRepository postReactionRepository, IReactionRepository reactionRepository, ITagRepository tagRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
             _tagRepository = tagRepository;
             _subscriptionRepository = subscriptionRepository;
+            _postReactionRepository = postReactionRepository;
+            _reactionRepository = reactionRepository;
         }
 
         public IActionResult Index()
@@ -53,11 +57,16 @@ namespace TabloidMVC.Controllers
                 }
             }
 
+            List<Reaction> reactions = _reactionRepository.GetReactions();
+            List<PostReaction> postReactions = _postReactionRepository.GetPostReactionsByPostId(id);
+
             List<Subscription> mySubscriptions = _subscriptionRepository.GetUserSubscriptions(userId);
 
             PostDetailsViewModel vm = new PostDetailsViewModel();
 
             vm.Post = post;
+            vm.AllReactions = reactions;
+            vm.AllPostReactions = postReactions;
             vm.Tags = _tagRepository.GetTagPostById(id);
 
             foreach (Subscription subscription in mySubscriptions)
@@ -116,7 +125,14 @@ namespace TabloidMVC.Controllers
         {
             var post = _postRepository.GetUserPostById(id, GetCurrentUserProfileId());
 
-            return View(post);
+            if (GetCurrentUserProfileId() == post.UserProfileId || User.IsInRole("1"))
+            {
+                return View(post);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]

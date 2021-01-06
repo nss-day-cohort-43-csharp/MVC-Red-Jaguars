@@ -62,12 +62,13 @@ namespace TabloidMVC.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, userProfile.Id.ToString()),
-                new Claim(ClaimTypes.Email, userProfile.Email),
+                new Claim(ClaimTypes.NameIdentifier, userProfile.Id.ToString()),                    new Claim(ClaimTypes.NameIdentifier, userProfile.Id.ToString()),
+                new Claim(ClaimTypes.Email, userProfile.Email),                 new Claim(ClaimTypes.Email, userProfile.Email),
+                new Claim(ClaimTypes.Role, userProfile.UserTypeId.ToString()),
             };
 
             var claimsIdentity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,

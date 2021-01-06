@@ -21,12 +21,18 @@
                 </a>
             </div>
             <div class="row">
-                <a asp-action="Edit" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Edit">
-                    <i class="fas fa-pencil-alt"></i>
-                </a>
-                <a asp-action="Delete" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Delete">
-                    <i class="fas fa-trash"></i>
-                </a>
+                @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Edit">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                }
+
+
+
                 @if (Model.Subscribed != true)
                 {
                     <a asp-controller="Subscription" asp-action="Subscribe" asp-route-providerId="@Model.Post.UserProfileId" asp-route-postId="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Subscribe">
@@ -47,7 +53,7 @@
             </section>
         }
         <section class="row post__content">
-            <p class="col-sm-12 mt-5">)</p>
+            <p class="col-sm-12 mt-5">@Model.Post.Content</p>
         </section>
         <div>
             <a asp-controller="Comment" asp-action="Create" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Add Comment">
@@ -56,6 +62,22 @@
             <a asp-controller="Comment" asp-action="Index" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Comments">
                 <i class="fas fa-comment-alt"></i>
             </a>
+            @foreach (Reaction reaction in Model.AllReactions)
+            {
+                int total = 0;
+                <a asp-controller="Reaction" asp-action="React" asp-route-reactionId="@reaction.Id" asp-route-postId="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="React">
+                    <img src="@reaction.ImageLocation" alt="@reaction.Name reaction" id="reactionImage" height="25px" width="25px" />
+                </a>
+                @foreach (PostReaction postReaction in Model.AllPostReactions)
+                {
+                    if (postReaction.ReactionId == reaction.Id)
+                    {
+                        total++;
+                    }
+                }
+                @total
+            }
+
         </div>
     </div>
 </div>
