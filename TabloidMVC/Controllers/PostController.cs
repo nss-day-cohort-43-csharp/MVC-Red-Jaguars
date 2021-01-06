@@ -7,6 +7,7 @@ using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 using System.Linq;
 using TabloidMVC.Models;
+using System.Collections.Generic;
 
 namespace TabloidMVC.Controllers
 {
@@ -15,11 +16,13 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ISubscriptionRepository _subscriptionRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository, ISubscriptionRepository subscriptionRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _subscriptionRepository = subscriptionRepository;
         }
 
         public IActionResult Index()
@@ -37,16 +40,32 @@ namespace TabloidMVC.Controllers
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);
+            int userId = GetCurrentUserProfileId();
+
             if (post == null)
-            {
-                int userId = GetCurrentUserProfileId();
+            {                
                 post = _postRepository.GetUserPostById(id, userId);
                 if (post == null)
                 {
                     return NotFound();
                 }
             }
-            return View(post);
+
+            List<Subscription> mySubscriptions = _subscriptionRepository.GetUserSubscriptions(userId);
+
+            PostDetailsViewModel vm = new PostDetailsViewModel();
+
+            vm.Post = post;
+
+            foreach (Subscription subscription in mySubscriptions)
+            {
+                if (subscription.ProviderUserProfileId == post.UserProfileId)
+                {
+                    vm.Subscribed = true;
+                }
+            }
+
+            return View(vm);
         }
 
         public IActionResult Create()

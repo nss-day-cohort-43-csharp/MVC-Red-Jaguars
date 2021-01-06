@@ -35,6 +35,42 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public List<Subscription> GetUserSubscriptions(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                    SELECT Id, SubscriberUserProfileId, ProviderUserProfileId, BeginDateTime, EndDateTime
+                    FROM Subscription
+                    WHERE SubscriberUserProfileId = @subUserProfileId";
+
+                    cmd.Parameters.AddWithValue("@subUserProfileID", id);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<Subscription> subscriptions = new List<Subscription>();
+
+                    while (reader.Read())
+                    {
+                        Subscription subscription = new Subscription()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            SubscriberUserProfileId = reader.GetInt32(reader.GetOrdinal("SubscriberUserProfileId")),
+                            ProviderUserProfileId = reader.GetInt32(reader.GetOrdinal("ProviderUserProfileId")),
+                            BeginDateTime = reader.GetDateTime(reader.GetOrdinal("BeginDateTime")),
+                            EndDateTime = (DateTime)Utils.DbUtils.GetNullableDateTime(reader, "EndDateTime")  
+                        };
+                        subscriptions.Add(subscription);
+                    }
+                    reader.Close();
+                    return subscriptions;                    
+                }
+            }            
+        }
+
         
     }
 }
