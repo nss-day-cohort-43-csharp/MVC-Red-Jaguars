@@ -1,0 +1,16 @@
+﻿@model TabloidMVC.Models.UserProfile
+
+@{
+    ViewData["Title"] = "Activate";
+}
+
+<h1>Activate</h1>
+
+
+<h3>Are you sure you want to activate @Model.DisplayName?</h3>
+<div>
+    <form asp-action="Activate">
+        <input type="submit" value="Activate" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

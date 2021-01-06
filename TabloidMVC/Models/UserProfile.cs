@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient.Server;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Intrinsics.X86;
 
 namespace TabloidMVC.Models
@@ -7,9 +8,13 @@ namespace TabloidMVC.Models
     public class UserProfile
     {
         public int Id { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
+        [Required]
         public string DisplayName { get; set; }
+        [Required]
         public string Email { get; set; }
         public DateTime CreateDateTime { get; set; }
         public string ImageLocation { get; set; }
@@ -22,5 +27,6 @@ namespace TabloidMVC.Models
                 return $"{FirstName} {LastName}";
             }
         }
+        public Boolean Active { get; set; }
     }
 }
