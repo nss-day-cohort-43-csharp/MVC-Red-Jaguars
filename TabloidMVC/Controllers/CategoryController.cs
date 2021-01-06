@@ -36,6 +36,7 @@ namespace TabloidMVC.Controllers
         // GET: CategoryController/Create
         public ActionResult Create()
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             return View();
         }
 
@@ -44,6 +45,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Category category)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             try
             {
                 _categoryRepository.Add(category);
@@ -58,6 +60,7 @@ namespace TabloidMVC.Controllers
         // GET: CategoryController/Edit/5
         public ActionResult Edit(int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             Category category = _categoryRepository.GetCategoryById(id);
             return View(category);
         }
@@ -67,6 +70,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Category category)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             try
             {
                 _categoryRepository.Edit(category);
@@ -81,6 +85,7 @@ namespace TabloidMVC.Controllers
         // GET: CategoryController/Delete/5
         public ActionResult Delete(int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             Category category = _categoryRepository.GetCategoryById(id);
             return View(category);
         }
@@ -90,6 +95,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(Category category)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             try
             {
                 _categoryRepository.Delete(category);
@@ -97,7 +103,7 @@ namespace TabloidMVC.Controllers
             }
             catch
             {
-                
+
                 return View(category);
             }
         }
