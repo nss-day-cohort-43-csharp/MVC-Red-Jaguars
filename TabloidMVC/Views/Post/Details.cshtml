@@ -50,8 +50,23 @@
             <a asp-controller="Comment" asp-action="Index" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Comments">
                 <i class="fas fa-comment-alt"></i>
             </a>
+            @foreach (Reaction reaction in Model.AllReactions)
+            {
+                int total = 0;
+                <a asp-controller="Reaction" asp-action="React" asp-route-reactionId="@reaction.Id" asp-route-postId="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="React">
+                    <img src="@reaction.ImageLocation" alt="@reaction.Name reaction" id="reactionImage" height="25px" width="25px" />
+                </a>
+                @foreach(PostReaction postReaction in Model.AllPostReactions)
+                {
+                    if(postReaction.ReactionId == reaction.Id)
+                    {
+                        total++;
+                    }
+                }
+                @total
+             }
 
-        </div>
+            </div>
 
     </div>
 </div>

@@ -33,3 +33,23 @@ VALUES (
 'There are those' + char(10) + 'who do not believe' + char(10) + 'C# is the best.' + char(10) + 'They are wrong.',
     'https://gizmodiva.com/wp-content/uploads/2017/10/SCOTT-A-WOODWARD_1SW1943-1170x689.jpg',SYSDATETIME(), SYSDATETIME(), 1, 1, 1);
 SET IDENTITY_INSERT [Post] OFF
+
+SET IDENTITY_INSERT [Reaction] ON
+INSERT INTO [Reaction] ( [Id], [Name], [ImageLocation])
+VALUES (1, 'Like', 'https://www.pngkey.com/png/detail/45-451702_thumbs-up-emoji-png-transparent-thumbs-up-sticker.png');
+
+INSERT INTO [Reaction] ( [Id], [Name], [ImageLocation])
+VALUES (2, 'Love', 'https://toppng.com/uploads/preview/heart-emoji-11549911583t6kulc2slx.png');
+
+INSERT INTO [Reaction] ( [Id], [Name], [ImageLocation])
+VALUES (3, 'Laughing', 'https://www.clipartmax.com/png/middle/426-4265976_free-png-download-emoji-transparent-laughing-emoji-laugh-emoji-png-transparent.png');
+
+INSERT INTO [Reaction] ( [Id], [Name], [ImageLocation])
+VALUES (4, 'Wow', 'https://cdn.shopify.com/s/files/1/1061/1924/products/12_grande.png');
+
+INSERT INTO [Reaction] ( [Id], [Name], [ImageLocation])
+VALUES (5, 'Sad', 'https://toppng.com/uploads/preview/sad-emoji-11549513329eul5223kjq.png');
+
+INSERT INTO [Reaction] ( [Id], [Name], [ImageLocation])
+VALUES (6, 'Angry', 'https://cdn.shopify.com/s/files/1/1061/1924/products/Super_Angry_Face_Emoji_ios10_grande.png');
+SET IDENTITY_INSERT [Reaction] OFF
