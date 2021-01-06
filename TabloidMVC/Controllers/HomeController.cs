@@ -26,23 +26,33 @@ namespace TabloidMVC.Controllers
 
         public IActionResult Index()
         {
-            int loggedInUser = GetCurrentUserProfileId();
-            List<Subscription> userSubscriptions = _subscriptionRepository.GetUserSubscriptions(loggedInUser);
-
-            List<Post> postsToView = new List<Post>();
-
-            foreach (Subscription subscription in userSubscriptions)
+            try
             {
-                List<Post> providerPosts =_postRepository.GetPostsByUser(subscription.ProviderUserProfileId); 
+                int loggedInUser = GetCurrentUserProfileId();
 
-                foreach (Post post in providerPosts)
+                List<Subscription> userSubscriptions = _subscriptionRepository.GetUserSubscriptions(loggedInUser);
+
+                List<Post> postsToView = new List<Post>();
+
+                foreach (Subscription subscription in userSubscriptions)
                 {
-                    postsToView.Add(post);
-                }
-            }
-                       
+                    List<Post> providerPosts = _postRepository.GetPostsByUser(subscription.ProviderUserProfileId);
 
-            return View(postsToView);
+                    foreach (Post post in providerPosts)
+                    {
+                        postsToView.Add(post);
+                    }
+                }
+
+
+                return View(postsToView);
+
+            }
+            catch
+            {
+                return View();
+            }
+            
         }
 
         public IActionResult Privacy()

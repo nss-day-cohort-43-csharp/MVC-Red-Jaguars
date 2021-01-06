@@ -27,7 +27,8 @@
     </div>
 
     @model IEnumerable<TabloidMVC.Models.Post>
-            
+    @if (Model != null)
+    {
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -72,7 +73,10 @@
             </tbody>
         </table>
 
-    
+    }
+
+
+
 
     @if (!User.Identity.IsAuthenticated)
     {
