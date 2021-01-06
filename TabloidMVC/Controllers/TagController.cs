@@ -35,6 +35,7 @@ namespace TabloidMVC.Controllers
         // GET: TagController/Create
         public ActionResult Create()
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             return View();
         }
 
@@ -43,6 +44,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Tag tag)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             try
             {
                 _tagRepository.AddTag(tag);
@@ -58,6 +60,7 @@ namespace TabloidMVC.Controllers
         // GET: TagController/Edit/5
         public ActionResult Edit(int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             Tag tag = _tagRepository.GetTagById(id);
 
             return View(tag);
@@ -68,6 +71,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Tag tag)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             try
             {
                 _tagRepository.UpdateTag(tag);
@@ -83,6 +87,7 @@ namespace TabloidMVC.Controllers
         // GET: TagController/Delete/5
         public ActionResult Delete(int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             Tag tag = _tagRepository.GetTagById(id);
 
             return View(tag);
@@ -93,6 +98,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Tag tag)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             try
             {
                 _tagRepository.DeleteTag(id);
