@@ -9,5 +9,6 @@ namespace TabloidMVC.Repositories
     public interface IPostReactionRepository
     {
         public List<PostReaction> GetPostReactionsByPostId(int id);
+        public void AddPostReaction(PostReaction postReaction);
     }
 }
