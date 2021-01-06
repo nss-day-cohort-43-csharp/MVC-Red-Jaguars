@@ -1,13 +1,21 @@
+<<<<<<< HEAD
 ﻿@model TabloidMVC.Models.ViewModels.PostTagsViewModel
 
 @{
     ViewData["Title"] = $"Post - {Model.post.Title}";
+=======
+﻿@model TabloidMVC.Models.ViewModels.PostDetailsViewModel
+
+@{
+    ViewData["Title"] = $"Post - {Model.Post.Title}";
+>>>>>>> master
 }
 
 <div class="container pt-5">
     <div class="post">
         <section class="px-3">
             <div class="row justify-content-between">
+<<<<<<< HEAD
                 <h1 class="text-secondary">@Model.post.Title</h1>
                 <h1 class="text-black-50">@Model.post.Category.Name</h1>
             </div>
@@ -26,20 +34,50 @@
                     <i class="fas fa-pencil-alt"></i>
                 </a>
                 <a asp-action="Delete" asp-route-id="@Model.post.Id" class="btn btn-outline-primary mx-1" title="Delete">
+=======
+                <h1 class="text-secondary">@Model.Post.Title</h1>
+                <h1 class="text-black-50">@Model.Post.Category.Name</h1>
+            </div>
+            <div class="row justify-content-between">
+                <p class="text-secondary">Written by @Model.Post.UserProfile.DisplayName</p>
+                <p class="text-black-50">Published on @Html.DisplayFor(model => model.Post.PublishDateTime)</p>
+            </div>
+            <div class="row">
+                <a asp-action="Edit" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Edit">
+                    <i class="fas fa-pencil-alt"></i>
+                </a>
+                <a asp-action="Delete" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Delete">
+>>>>>>> master
                     <i class="fas fa-trash"></i>
                 </a>
+                @if (Model.Subscribed != true)
+                {
+                    <a asp-controller="Subscription" asp-action="Subscribe" asp-route-providerId="@Model.Post.UserProfileId" asp-route-postId="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Subscribe">
+                        <i class="fas fa-plus-circle"></i>
+                    </a>
+                }
+
             </div>
         </section>
         <hr />
+<<<<<<< HEAD
         @if (!string.IsNullOrWhiteSpace(Model.post.ImageLocation))
         {
             <section class="row justify-content-center">
                 <div>
                     <img src="@Model.post.ImageLocation" />
+=======
+        @if (!string.IsNullOrWhiteSpace(Model.Post.ImageLocation))
+        {
+            <section class="row justify-content-center">
+                <div>
+                    <img src="@Model.Post.ImageLocation" />
+>>>>>>> master
                 </div>
             </section>
         }
         <section class="row post__content">
+<<<<<<< HEAD
             <p class="col-sm-12 mt-5">@Html.DisplayFor(model => model.post.Content)</p>
         </section>
         <div>
@@ -47,6 +85,15 @@
                 <i class="fas fa-comment"></i>
             </a>
             <a asp-controller="Comment" asp-action="Index" asp-route-id="@Model.post.Id" class="btn btn-outline-primary mx-1" title="Comments">
+=======
+            <p class="col-sm-12 mt-5">@Html.DisplayFor(model => model.Post.Content)</p>
+        </section>
+        <div>
+            <a asp-controller="Comment" asp-action="Create" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Add Comment">
+                <i class="fas fa-comment"></i>
+            </a>
+            <a asp-controller="Comment" asp-action="Index" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Comments">
+>>>>>>> master
                 <i class="fas fa-comment-alt"></i>
             </a>
         </div>
