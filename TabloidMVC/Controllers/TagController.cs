@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
+using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -14,10 +15,13 @@ namespace TabloidMVC.Controllers
     public class TagController : Controller
     {
         private readonly ITagRepository _tagRepository;
-        public TagController(ITagRepository tagRepository)
+        private readonly IPostRepository _postRepository;
+        public TagController(ITagRepository tagRepository, IPostRepository postRepository)
         {
             _tagRepository = tagRepository;
+            _postRepository = postRepository;
         }
+
         // GET: TagController
         public ActionResult Index()
         {
@@ -35,6 +39,7 @@ namespace TabloidMVC.Controllers
         // GET: TagController/Create
         public ActionResult Create()
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             return View();
         }
 
@@ -43,6 +48,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Tag tag)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             try
             {
                 _tagRepository.AddTag(tag);
@@ -58,6 +64,7 @@ namespace TabloidMVC.Controllers
         // GET: TagController/Edit/5
         public ActionResult Edit(int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             Tag tag = _tagRepository.GetTagById(id);
 
             return View(tag);
@@ -68,6 +75,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Tag tag)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             try
             {
                 _tagRepository.UpdateTag(tag);
@@ -83,6 +91,7 @@ namespace TabloidMVC.Controllers
         // GET: TagController/Delete/5
         public ActionResult Delete(int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             Tag tag = _tagRepository.GetTagById(id);
 
             return View(tag);
@@ -93,6 +102,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Tag tag)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             try
             {
                 _tagRepository.DeleteTag(id);
@@ -102,6 +112,60 @@ namespace TabloidMVC.Controllers
             catch (Exception ex)
             {
                 return View(tag);
+            }
+        }
+
+        public ActionResult GetTagsForPost(int id)
+        {
+            PostDetailsViewModel vm = new PostDetailsViewModel()
+            {
+                Tags = _tagRepository.GetAllTags(),
+                Post = _postRepository.GetPublishedPostById(id)
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GetTagsForPost(int id, PostDetailsViewModel viewModel)
+        {
+            try
+            {
+                _tagRepository.AddTagToPost(viewModel.Tag.Id, viewModel.Post);
+
+                return RedirectToAction(nameof(Details), "Post", new { id = viewModel.Post.Id });
+            }
+            catch (Exception ex)
+            {
+                return View(viewModel);
+            }
+        }
+
+        public ActionResult GetTagsFromPostDetails(int id)
+        {
+            PostDetailsViewModel vm = new PostDetailsViewModel()
+            {
+                Tags = _tagRepository.GetTagForDelete(id),
+                Post = _postRepository.GetPublishedPostById(id)
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GetTagsFromPostDetails(int id, PostDetailsViewModel viewModel)
+        {
+            try
+            {
+                _tagRepository.DeleteTagFromPost(viewModel.Tag.Id);
+
+                return RedirectToAction(nameof(Details), "Post", new { id = viewModel.Post.Id });
+            }
+            catch (Exception ex)
+            {
+                return View(viewModel);
             }
         }
     }

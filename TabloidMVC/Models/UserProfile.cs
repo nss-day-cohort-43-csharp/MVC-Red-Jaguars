@@ -28,5 +28,6 @@ namespace TabloidMVC.Models
             }
         }
         public Boolean Active { get; set; }
+        public int GetUserType() { return UserTypeId; }
     }
 }

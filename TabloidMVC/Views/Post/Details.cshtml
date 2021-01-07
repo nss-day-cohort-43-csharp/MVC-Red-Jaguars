@@ -1,5 +1,4 @@
 ﻿@model TabloidMVC.Models.ViewModels.PostDetailsViewModel
-
 @{
     ViewData["Title"] = $"Post - {Model.Post.Title}";
 }
@@ -15,13 +14,28 @@
                 <p class="text-secondary">Written by @Model.Post.UserProfile.DisplayName</p>
                 <p class="text-black-50">Published on @Html.DisplayFor(model => model.Post.PublishDateTime)</p>
             </div>
+            <div class="row justify-content-between">
+                <p class="text-secondary">Tags @string.Join(", ", Model.Tags)</p>
+                <a asp-controller="Tag" asp-action="GetTagsForPost" asp-route-id="@Model.Post.Id" title="Add Tag">
+                    Add Tag
+                </a> |
+                <a asp-controller="Tag" asp-action="GetTagsFromPostDetails" asp-route-id="@Model.Post.Id" title="Delete Tag">
+                    Delete Tag
+                </a>
+            </div>
             <div class="row">
-                <a asp-action="Edit" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Edit">
-                    <i class="fas fa-pencil-alt"></i>
-                </a>
-                <a asp-action="Delete" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Delete">
-                    <i class="fas fa-trash"></i>
-                </a>
+                @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Edit">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                }
+
+
+
                 @if (Model.Subscribed != true)
                 {
                     <a asp-controller="Subscription" asp-action="Subscribe" asp-route-providerId="@Model.Post.UserProfileId" asp-route-postId="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Subscribe">
@@ -44,11 +58,12 @@
             <section class="row justify-content-center">
                 <div>
                     <img src="@Model.Post.ImageLocation" />
+
                 </div>
             </section>
         }
         <section class="row post__content">
-            <p class="col-sm-12 mt-5">@Html.DisplayFor(model => model.Post.Content)</p>
+            <p class="col-sm-12 mt-5">@Model.Post.Content</p>
         </section>
         <div>
             <a asp-controller="Comment" asp-action="Create" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Add Comment">
@@ -63,17 +78,16 @@
                 <a asp-controller="Reaction" asp-action="React" asp-route-reactionId="@reaction.Id" asp-route-postId="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="React">
                     <img src="@reaction.ImageLocation" alt="@reaction.Name reaction" id="reactionImage" height="25px" width="25px" />
                 </a>
-                @foreach(PostReaction postReaction in Model.AllPostReactions)
+                @foreach (PostReaction postReaction in Model.AllPostReactions)
                 {
-                    if(postReaction.ReactionId == reaction.Id)
+                    if (postReaction.ReactionId == reaction.Id)
                     {
                         total++;
                     }
                 }
                 @total
-             }
+            }
 
-            </div>
-
+        </div>
     </div>
 </div>

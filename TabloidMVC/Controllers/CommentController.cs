@@ -78,7 +78,14 @@ namespace TabloidMVC.Controllers
         public IActionResult Edit(int id)
         {
             Comment comment = _commentRepository.GetCommentById(id);
-            return View(comment);
+            if (GetCurrentUserId() == comment.UserProfileId)
+            {
+                return View(comment);
+            }
+            else
+            {
+                return RedirectToAction("Index", new { id = id });
+            }
         }
 
         // POST: CommentController/Edit/5
@@ -102,7 +109,15 @@ namespace TabloidMVC.Controllers
         public IActionResult Delete(int id)
         {
             Comment comment = _commentRepository.GetCommentById(id);
-            return View(comment);
+            if (GetCurrentUserId() == comment.UserProfileId || User.IsInRole("1"))
+            {
+
+                return View(comment);
+            }
+            else
+            {
+                return RedirectToAction("Index", new { id = id });
+            }
         }
 
         // POST: CommentController/Delete/5
