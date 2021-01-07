@@ -16,8 +16,11 @@
             </div>
             <div class="row justify-content-between">
                 <p class="text-secondary">Tags @string.Join(", ", Model.Tags)</p>
-                <a asp-controller="Tag" asp-action="GetTagsForPost" asp-route-id="@Model.Post.Id" title="Manage Tags">
-                    Manage Tags
+                <a asp-controller="Tag" asp-action="GetTagsForPost" asp-route-id="@Model.Post.Id" title="Add Tag">
+                    Add Tag
+                </a> |
+                <a asp-controller="Tag" asp-action="GetTagsFromPostDetails" asp-route-id="@Model.Post.Id" title="Delete Tag">
+                    Delete Tag
                 </a>
             </div>
             <div class="row">

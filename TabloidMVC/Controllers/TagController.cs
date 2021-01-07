@@ -141,5 +141,32 @@ namespace TabloidMVC.Controllers
                 return View(viewModel);
             }
         }
+
+        public ActionResult GetTagsFromPostDetails(int id)
+        {
+            PostDetailsViewModel vm = new PostDetailsViewModel()
+            {
+                Tags = _tagRepository.GetTagForDelete(id),
+                Post = _postRepository.GetPublishedPostById(id)
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GetTagsFromPostDetails(int id, PostDetailsViewModel viewModel)
+        {
+            try
+            {
+                _tagRepository.DeleteTagFromPost(viewModel.Tag.Id);
+
+                return RedirectToAction(nameof(Details), "Post", new { id = viewModel.Post.Id });
+            }
+            catch (Exception ex)
+            {
+                return View(viewModel);
+            }
+        }
     }
 }
