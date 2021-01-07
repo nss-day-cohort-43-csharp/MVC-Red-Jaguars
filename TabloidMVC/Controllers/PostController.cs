@@ -8,6 +8,7 @@ using TabloidMVC.Repositories;
 using System.Linq;
 using TabloidMVC.Models;
 using System.Collections.Generic;
+using System;
 
 namespace TabloidMVC.Controllers
 {
@@ -124,7 +125,7 @@ namespace TabloidMVC.Controllers
 
         public ActionResult Delete(int id)
         {
-            var post = _postRepository.GetUserPostById(id, GetCurrentUserProfileId());
+            var post = _postRepository.GetPostById(id);
 
             if (GetCurrentUserProfileId() == post.UserProfileId || User.IsInRole("1"))
             {
@@ -146,7 +147,7 @@ namespace TabloidMVC.Controllers
 
                 return RedirectToAction("Index");
             }
-            catch
+            catch(Exception ex)
             {
                 return View(post);
             }
