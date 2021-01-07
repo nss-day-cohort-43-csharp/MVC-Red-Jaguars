@@ -53,25 +53,25 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: SubscriptionController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+        //public ActionResult Edit(int id)
+        //{
+        //    return View();
+        //}
 
         // POST: SubscriptionController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit(int id, IFormCollection collection)
+        //{
+        //    try
+        //    {
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
 
         // GET: SubscriptionController/Delete/5
         public ActionResult Delete(int id)
@@ -101,11 +101,21 @@ namespace TabloidMVC.Controllers
             subscription.ProviderUserProfileId = providerId;
             subscription.SubscriberUserProfileId = GetCurrentUserId();
             subscription.BeginDateTime = DateTime.Now;
+            subscription.EndDateTime = DateTime.MaxValue;
 
             _subscriptionRepository.Add(subscription);
 
             return RedirectToAction("Details", "Post", new { id = postId });
 
+        }
+
+        public ActionResult Unsubscribe(int subId, int postId)
+        {
+            Subscription subscription = _subscriptionRepository.GetSubscriptionById(subId);
+
+            _subscriptionRepository.Edit(subscription);
+
+            return RedirectToAction("Details", "Post", new { id = postId });
         }
 
         private int GetCurrentUserId()

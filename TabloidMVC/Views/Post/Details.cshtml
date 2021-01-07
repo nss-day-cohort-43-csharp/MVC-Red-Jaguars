@@ -46,6 +46,13 @@
                     </a>
                 }
 
+                @if (Model.Subscribed == true)
+                {
+                    <a asp-controller="Subscription" asp-action="Unsubscribe" asp-route-subId="@Model.SubscriptionId" asp-route-postId="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Subscribe">
+                        <i class="fas fa-ban"></i>
+                    </a>
+                }
+
             </div>
         </section>
         <hr />
