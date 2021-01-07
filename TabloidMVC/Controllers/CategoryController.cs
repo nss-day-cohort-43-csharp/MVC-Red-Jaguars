@@ -23,6 +23,7 @@ namespace TabloidMVC.Controllers
         // GET: CategoryController
         public ActionResult Index()
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             List<Category> categories = _categoryRepository.GetAll();
             return View(categories);
         }
@@ -30,6 +31,7 @@ namespace TabloidMVC.Controllers
         // GET: CategoryController/Details/5
         public ActionResult Details(int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             return View();
         }
 
