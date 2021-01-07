@@ -148,6 +148,11 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult GetTagsForPost(int id, PostDetailsViewModel viewModel)
         {
+            List<Tag> postTags = _tagRepository.GetTagPostById(viewModel.Post.Id);
+            if(postTags.Exists(tag => tag.Id == viewModel.Tag.Id))
+            {
+                return RedirectToAction(nameof(Details), "Post", new { id = viewModel.Post.Id });
+            }
             try
             {
                 _tagRepository.AddTagToPost(viewModel.Tag.Id, viewModel.Post);
