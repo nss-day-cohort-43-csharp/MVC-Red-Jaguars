@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
@@ -117,11 +118,13 @@ namespace TabloidMVC.Controllers
 
         public ActionResult GetTagsForPost(int id)
         {
+
             PostDetailsViewModel vm = new PostDetailsViewModel()
             {
                 Tags = _tagRepository.GetAllTags(),
                 Post = _postRepository.GetPublishedPostById(id)
             };
+            if (!User.IsInRole("1") || GetCurrentUserId() != vm.Post.UserProfileId) { return RedirectToAction("Index", "Home"); }
 
             return View(vm);
         }
@@ -149,6 +152,7 @@ namespace TabloidMVC.Controllers
                 Tags = _tagRepository.GetTagForDelete(id),
                 Post = _postRepository.GetPublishedPostById(id)
             };
+            if (!User.IsInRole("1") || GetCurrentUserId() != vm.Post.UserProfileId) { return RedirectToAction("Index", "Home"); }
 
             return View(vm);
         }
@@ -167,6 +171,11 @@ namespace TabloidMVC.Controllers
             {
                 return View(viewModel);
             }
+        }
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
     }
 }
