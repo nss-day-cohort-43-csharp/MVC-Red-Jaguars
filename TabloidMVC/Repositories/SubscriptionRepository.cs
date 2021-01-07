@@ -67,9 +67,18 @@ namespace TabloidMVC.Repositories
                             subscriptions.Add(subscription);
                         }
 
-                    
+                    List<Subscription> currentSubscriptions = new List<Subscription>();
+
+                    foreach (Subscription sub in subscriptions)
+                    {
+                        if (sub.EndDateTime > DateTime.Now)
+                        {
+                            currentSubscriptions.Add(sub);
+                        }
+                    }
+
                     reader.Close();
-                    return subscriptions;                    
+                    return currentSubscriptions;                    
                 }
             }            
         }
