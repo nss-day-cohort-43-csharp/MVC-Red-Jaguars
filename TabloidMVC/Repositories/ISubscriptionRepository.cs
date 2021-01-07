@@ -10,5 +10,9 @@ namespace TabloidMVC.Repositories
     {
         public void Add(Subscription subscription);
         public List<Subscription> GetUserSubscriptions(int id);
+
+        public Subscription GetSubscriptionById(int id);
+
+        public void Edit(Subscription subscription);
     }
 }

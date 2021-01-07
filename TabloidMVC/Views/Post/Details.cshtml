@@ -18,14 +18,14 @@
                 <p class="text-secondary">Tags @string.Join(", ", Model.Tags)</p>
                 @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
                 {
-                    <a asp-controller="Tag" asp-action="GetTagsForPost" asp-route-id="@Model.Post.Id" title="Add Tag">
-                        Add Tag
+                    <a asp-controller="Tag" asp-action="GetTagsForPost" asp-route-id="@Model.Post.Id" title="Add Tag" class="btn btn-outline-primary mx-1">
+                        <i class="fa fa-plus"></i>
                     </a>} |
                 @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
                 {
 
-                    <a asp-controller="Tag" asp-action="GetTagsFromPostDetails" asp-route-id="@Model.Post.Id" title="Delete Tag">
-                        Delete Tag
+                     <a asp-controller="Tag" asp-action="GetTagsFromPostDetails" asp-route-id="@Model.Post.Id" title="Delete Tag" class="btn btn-outline-primary mx-1">
+                        <i class="fas fa-trash"></i>
                     </a>
                 }
             </div>
@@ -49,6 +49,13 @@
                 {
                     <a asp-controller="Subscription" asp-action="Subscribe" asp-route-providerId="@Model.Post.UserProfileId" asp-route-postId="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Subscribe">
                         <i class="fas fa-plus-circle"></i>
+                    </a>
+                }
+
+                @if (Model.Subscribed == true)
+                {
+                    <a asp-controller="Subscription" asp-action="Unsubscribe" asp-route-subId="@Model.SubscriptionId" asp-route-postId="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Subscribe">
+                        <i class="fas fa-ban"></i>
                     </a>
                 }
 
