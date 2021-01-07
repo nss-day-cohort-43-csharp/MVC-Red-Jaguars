@@ -26,15 +26,30 @@ namespace TabloidMVC.Controllers
         // GET: TagController
         public ActionResult Index()
         {
-            List<Tag> tags = _tagRepository.GetAllTags();
+            if(GetCurrentUserType() != 1)
+            {
+                return NotFound();
+            }
+            else
+            {
+                List<Tag> tags = _tagRepository.GetAllTags();
 
-            return View(tags);
+                return View(tags);
+            }
+            
         }
 
         // GET: TagController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            if (GetCurrentUserType() != 1)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return View();
+            }
         }
 
         // GET: TagController/Create
@@ -175,6 +190,12 @@ namespace TabloidMVC.Controllers
         private int GetCurrentUserId()
         {
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
+        }
+
+        private int GetCurrentUserType()
+        {
+            string id = User.FindFirstValue(ClaimTypes.Role);
             return int.Parse(id);
         }
     }

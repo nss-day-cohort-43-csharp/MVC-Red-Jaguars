@@ -4,16 +4,20 @@
     ViewData["Title"] = "Deactivate";
 }
 
-<h1>Deactivate</h1>
 @if (!String.IsNullOrEmpty(Model.ErrorMsg))
 {
     <div class="alert alert-danger">@Model.ErrorMsg</div>
 }
 
-<h3>Are you sure you want to deactivate @Model.User.DisplayName?</h3>
-<div>
-    <form asp-action="Deactivate">
-        <input type="submit" value="Deactivate" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+
+<div class="container pt-5">
+    <div class="row justify-content-center">
+        <div class="card col-md-12 col-lg-8">
+            <h3 class="mt-3 text-primary text-center card-title">Are you sure you want to deactivate @Model.User.DisplayName?</h3>
+            <form class="mt-5 card-body" asp-action="Deactivate">
+                <input type="submit" value="Deactivate" class="btn btn-danger btn-block" />
+            </form>
+        </div>
+    </div>
+    <a asp-action="Index">Back to List</a>
 </div>

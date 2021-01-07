@@ -24,16 +24,19 @@ namespace TabloidMVC.Controllers
 
         public IActionResult Index()
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             var users = _userProfileRepository.GetAllUsers().OrderBy(user => user.DisplayName);
             return View(users);
         }
         public IActionResult DeactiveView()
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             var users = _userProfileRepository.GetAllDeactiveUsers().OrderBy(user => user.DisplayName);
             return View(users);
         }
         public IActionResult Details(int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             var user = _userProfileRepository.GetUserById(id);
             if (user == null)
             {
@@ -43,6 +46,7 @@ namespace TabloidMVC.Controllers
         }
         public ActionResult Deactivate(int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             DeactivateUserViewModel vm = new DeactivateUserViewModel()
             {
                 User = _userProfileRepository.GetUserById(id)
@@ -58,6 +62,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Deactivate(int id, DeactivateUserViewModel vm)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             vm = new DeactivateUserViewModel()
             {
                 User = _userProfileRepository.GetUserById(id)
@@ -76,6 +81,7 @@ namespace TabloidMVC.Controllers
         }
         public ActionResult Activate(int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             var user = _userProfileRepository.GetUserById(id);
             if (user == null)
             {
@@ -88,6 +94,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Activate(int id, UserProfile user)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             try
             {
                 _userProfileRepository.ActivateUser(id);
@@ -103,6 +110,7 @@ namespace TabloidMVC.Controllers
 
         public ActionResult ChangeType(int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             var types = _userTypeRepository.GetUserTypes();
             var user = _userProfileRepository.GetUserById(id);
             if (user == null)
@@ -122,6 +130,7 @@ namespace TabloidMVC.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ChangeType(UserProfileTypeViewModel vm, int id)
         {
+            if (!User.IsInRole("1")) { return RedirectToAction("Index", "Home"); }
             try
             {
                 int Admin = _userProfileRepository.AdminCount();
