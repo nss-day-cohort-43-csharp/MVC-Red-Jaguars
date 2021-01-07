@@ -14,20 +14,22 @@
                 <p class="text-secondary">Written by @Model.Post.UserProfile.DisplayName</p>
                 <p class="text-black-50">Published on @Html.DisplayFor(model => model.Post.PublishDateTime)</p>
             </div>
-            <div class="row justify-content-between">
-                <p class="text-secondary">Tags @string.Join(", ", Model.Tags)</p>
-                @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
-                {
-                    <a asp-controller="Tag" asp-action="GetTagsForPost" asp-route-id="@Model.Post.Id" title="Add Tag" class="btn btn-outline-primary mx-1">
-                        <i class="fa fa-plus"></i>
-                    </a>} |
-                @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
-                {
+            <div class="row justify-content-end">
+                <div>
+                    Tags: @string.Join(", ", Model.Tags)
+                    @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
+                    {
+                        <a asp-controller="Tag" asp-action="GetTagsForPost" asp-route-id="@Model.Post.Id" title="Add Tag" class="btn btn-outline-primary mx-1">
+                            <i class="fa fa-plus"></i>
+                        </a>} |
+                    @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
+                    {
 
-                     <a asp-controller="Tag" asp-action="GetTagsFromPostDetails" asp-route-id="@Model.Post.Id" title="Delete Tag" class="btn btn-outline-primary mx-1">
-                        <i class="fas fa-trash"></i>
-                    </a>
-                }
+                        <a asp-controller="Tag" asp-action="GetTagsFromPostDetails" asp-route-id="@Model.Post.Id" title="Delete Tag" class="btn btn-outline-primary mx-1">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    }
+                </div>
             </div>
             <div class="row">
                 @if (User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
