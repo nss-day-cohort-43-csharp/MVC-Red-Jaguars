@@ -15,23 +15,29 @@
                 <p class="text-black-50">Published on @Html.DisplayFor(model => model.Post.PublishDateTime)</p>
             </div>
             <div class="row justify-content-between">
-                <div>
-                    Tags: @string.Join(", ", Model.Tags)
-
+                <p class="text-secondary">Tags @string.Join(", ", Model.Tags)</p>
+                @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
+                {
                     <a asp-controller="Tag" asp-action="GetTagsForPost" asp-route-id="@Model.Post.Id" title="Add Tag" class="btn btn-outline-primary mx-1">
                         <i class="fa fa-plus"></i>
-                    </a>
-                    <a asp-controller="Tag" asp-action="GetTagsFromPostDetails" asp-route-id="@Model.Post.Id" title="Delete Tag" class="btn btn-outline-primary mx-1">
+                    </a>} |
+                @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
+                {
+
+                     <a asp-controller="Tag" asp-action="GetTagsFromPostDetails" asp-route-id="@Model.Post.Id" title="Delete Tag" class="btn btn-outline-primary mx-1">
                         <i class="fas fa-trash"></i>
                     </a>
-                </div>
+                }
             </div>
             <div class="row">
-                @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
+                @if (User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
                 {
                     <a asp-action="Edit" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Edit">
                         <i class="fas fa-pencil-alt"></i>
                     </a>
+                }
+                @if (User.IsInRole("1") || User.Claims.FirstOrDefault().Value == Model.Post.UserProfileId.ToString())
+                {
                     <a asp-action="Delete" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Delete">
                         <i class="fas fa-trash"></i>
                     </a>
