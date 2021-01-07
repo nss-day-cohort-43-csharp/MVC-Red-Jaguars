@@ -124,9 +124,9 @@ namespace TabloidMVC.Controllers
                 Tags = _tagRepository.GetAllTags(),
                 Post = _postRepository.GetPublishedPostById(id)
             };
-            if (!User.IsInRole("1") || GetCurrentUserId() != vm.Post.UserProfileId) { return RedirectToAction("Index", "Home"); }
-
-            return View(vm);
+            if (User.IsInRole("1")) { return View(vm); }
+            else if (GetCurrentUserId() == vm.Post.UserProfileId) { return View(vm); }
+            else { return RedirectToAction("Index", "Home"); }
         }
 
         [HttpPost]
@@ -152,9 +152,9 @@ namespace TabloidMVC.Controllers
                 Tags = _tagRepository.GetTagForDelete(id),
                 Post = _postRepository.GetPublishedPostById(id)
             };
-            if (!User.IsInRole("1") || GetCurrentUserId() != vm.Post.UserProfileId) { return RedirectToAction("Index", "Home"); }
-
-            return View(vm);
+            if (User.IsInRole("1")) { return View(vm); }
+            else if (GetCurrentUserId() == vm.Post.UserProfileId) { return View(vm); }
+            else { return RedirectToAction("Index", "Home"); }
         }
 
         [HttpPost]
